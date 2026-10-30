@@ -21,11 +21,7 @@ docker compose logs app --tail 50      # последние логи серви�
    ```
 3. В GitHub → Actions дождитесь зелёного запуска, в Packages появится образ `1.1.0`.
 4. Запустите эту версию:
-   ```bash
-   docker pull ghcr.io/OWNER/REPO:1.1.0
-   docker run -d --name guestbook-app -p 8000:8000 \
-     --env-file .env -e POSTGRES_HOST=<адрес-базы> ghcr.io/OWNER/REPO:1.1.0
-   ```
+   TAG=1.1.0 docker compose up -d
    Локально проще: в `compose.yaml` заменить `build: .` на `image: ghcr.io/OWNER/REPO:1.1.0`
    и выполнить `docker compose up -d`.
 
@@ -34,9 +30,9 @@ docker compose logs app --tail 50      # последние логи серви�
 Если новая версия сломалась (`/health` не отвечает, в логах ошибки):
 
 1. Остановите новую версию: `docker compose down` (данные в volume `db_data` сохраняются).
-2. Укажите в `compose.yaml` образ предыдущего тега, например `image: ghcr.io/OWNER/REPO:1.0.0`.
-3. Запустите: `docker compose up -d`.
-4. Проверьте: `curl http://localhost:8000/version` показывает `1.0.0`, `/health` отвечает `ok`.
+2. Запустите предыдущий тег:
+   TAG=1.0.0 docker compose up -d.
+3. Проверьте: `curl http://localhost:8000/version` показывает `1.0.0`, `/health` отвечает `ok`.
 
 Откат безопасен для данных: миграции только добавляют (`IF NOT EXISTS`) и ничего не удаляют,
 поэтому старая версия работает на базе, которую уже трогала новая.
