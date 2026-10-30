@@ -1,6 +1,6 @@
 services:
   app:
-    build: .
+    image: ghcr.io/david111989/guestbook:${TAG}
     ports:
       - "8000:8000"
     environment:
